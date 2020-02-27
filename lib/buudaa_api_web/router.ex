@@ -7,5 +7,6 @@ defmodule BuudaaApiWeb.Router do
 
   scope "/api", BuudaaApiWeb do
     pipe_through :api
+    resources "/users", UserController, except: [:new, :edit]
   end
 end
