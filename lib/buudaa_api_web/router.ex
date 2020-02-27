@@ -3,6 +3,7 @@ defmodule BuudaaApiWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    # plug BuudaaApiWeb.Auth
   end
 
   scope "/api", BuudaaApiWeb do
