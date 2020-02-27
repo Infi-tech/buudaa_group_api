@@ -3,8 +3,9 @@ defmodule BuudaaApi.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
-    field :password, :string
+    field :password, :string, virtual: true
     field :username, :string
+    field :password_hash, :string
 
     timestamps()
   end
@@ -14,5 +15,19 @@ defmodule BuudaaApi.Accounts.User do
     user
     |> cast(attrs, [:username, :password])
     |> validate_required([:username, :password])
+    |> validate_length(:username, min: 1, max: 20)
+    |> validate_length(:password, min: 6, max: 20)
+    |> unique_constraint(:username)
+    |> put_pass_hash()
+  end
+
+  defp put_pass_hash(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+        put_change(changeset, :password_hash, Comeonin.Pbkdf2.hashpwsalt(pass))
+
+      _ ->
+        changeset
+    end
   end
 end
